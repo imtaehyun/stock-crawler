@@ -1,10 +1,13 @@
-"""종목 DB 갱신"""
 import time
 
 import krx
 from database import session
 from models import 종목_마스터
+from utils.logger import Logger
 
+logger = Logger().get_logger()
+
+"""종목 DB 갱신"""
 try:
     start_time = time.time()
 
@@ -21,7 +24,8 @@ try:
 
     execution_time = time.time() - start_time
 
-    print('execution_time: {}'.format(execution_time))
-    print('{} rows added'.format(affected_rows))
+    logger.info('execution_time: {}'.format(execution_time))
+    logger.info('{} rows added'.format(affected_rows))
+
 except Exception as e:
-    print(e)
+    logger.exception(e)
