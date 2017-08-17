@@ -22,7 +22,8 @@ def update_stock_master():
                 session.add(종목_마스터(stock['marketName'], stock['short_code'][1:], stock['codeName'], stock['full_code']))
                 affected_rows += 1
 
-        session.commit()
+        if affected_rows > 0:
+            session.commit()
 
         execution_time = time.time() - start_time
 
