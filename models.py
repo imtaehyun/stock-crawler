@@ -21,6 +21,24 @@ class 뉴스_마스터(Base):
         self.name = name
         self.rss_url = rss_url
 
+class StockNews(Base):
+    __tablename__ = 'STOCK_NEWS'
+    __table_args__ = {'mysql_engine': 'InnoDB', 'mysql_charset': 'utf8'}
+
+    id = Column(String(20), primary_key=True)
+    offerer = Column(String(30))
+    title = Column(String(50))
+    link = Column(String(150))
+    date = Column(String(20))
+    created_at = Column(DateTime, default=datetime.now())
+
+    def __init__(self, id, offerer, title, link, date):
+        self.id = id
+        self.offerer = offerer
+        self.title = title
+        self.link = link
+        self.date = date
+
 class 종목_마스터(Base):
     __tablename__ = '종목_마스터'
     __table_args__ = {'mysql_engine': 'InnoDB', 'mysql_charset': 'utf8'}
