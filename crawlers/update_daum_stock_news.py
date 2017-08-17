@@ -13,6 +13,7 @@ logger = Logger().get_logger()
 
 
 def get_news_list(last_id=None, limit=30, page=1):
+    """다음 금융 뉴스 리스트 크롤링"""
     r = requests.get('http://finance.daum.net/news/news_list.daum?type=all&section=&limit={}&page={}'.format(limit, page))
 
     if r.status_code == 200:
@@ -35,6 +36,18 @@ def get_news_list(last_id=None, limit=30, page=1):
             news_list.append(dict(link=link, doc_id=doc_id, title=title, offerer=offerer, date=date))
 
         return news_list, new_last_id
+    else:
+        raise Exception(r.status_code)
+
+
+def get_news_content(doc_id):
+    """기사 상세 내용 크롤링"""
+    r = requests.get('http://finance.daum.net/news/news_print.daum?type=all&sub_type=&docid={}'.format(doc_id))
+
+    if r.status_code == 200:
+        # print(r.text)
+        content = Selector(text=r.text).css('#dmcfContents div::text, #dmcfContents p::text').extract()
+        return ' '.join(content)
     else:
         raise Exception(r.status_code)
 
@@ -62,4 +75,5 @@ def update_daum_stock_news():
         logger.exception(e, exc_info=True)
 
 if __name__ == '__main__':
-    update_daum_stock_news()
+    # update_daum_stock_news()
+    get_news_content('MD20170817230056038')
