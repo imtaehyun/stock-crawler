@@ -47,4 +47,4 @@ def test_stock_news(url):
         logger.exception(e)
 
 if __name__ == '__main__':
-    test_stock_news('http://rss.edaily.co.kr/stock_news.xml')
+    test_stock_news('http://file.mk.co.kr/news/rss/rss_50200011.xml')
