@@ -3,7 +3,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import os
 
-engine = create_engine(os.environ['MYSQL_CONNECTION'], echo=True)
+DEBUG = False if os.environ.get('PRODUCTION', '') else True
+engine = create_engine(os.environ['MYSQL_CONNECTION'], echo=DEBUG)
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

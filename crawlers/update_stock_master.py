@@ -4,8 +4,10 @@ import krx
 from database import session
 from models import 종목_마스터
 from utils.logger import Logger
+from utils.slack import Slack
 
 logger = Logger().get_logger()
+slack = Slack()
 
 
 def update_stock_master():
@@ -22,16 +24,18 @@ def update_stock_master():
                 session.add(종목_마스터(stock['marketName'], stock['short_code'][1:], stock['codeName'], stock['full_code']))
                 affected_rows += 1
 
-        if affected_rows > 0:
-            session.commit()
-
         execution_time = time.time() - start_time
 
         logger.info('execution_time: {}'.format(execution_time))
         logger.info('{} rows added'.format(affected_rows))
 
+        if affected_rows > 0:
+            session.commit()
+            slack.send_message('BATCH:update_stock_master success {}건 업데이트'.format(affected_rows))
+
     except Exception as e:
         logger.exception(e)
+        slack.send_message('BATCH:update_stock_master fail {}'.format(e))
 
 if __name__ == '__main__':
     update_stock_master()

@@ -8,8 +8,10 @@ from sqlalchemy import func
 from database import session
 from models import StockNews
 from utils.logger import Logger
+from utils.slack import Slack
 
 logger = Logger().get_logger()
+slack = Slack()
 
 
 def get_news_list(last_id=None, limit=30, page=1):
@@ -73,6 +75,8 @@ def update_daum_stock_news():
 
     except Exception as e:
         logger.exception(e, exc_info=True)
+        slack.send_message('BATCH:update_daum_stock_news fail {}'.format(e))
+
 
 if __name__ == '__main__':
     # update_daum_stock_news()
