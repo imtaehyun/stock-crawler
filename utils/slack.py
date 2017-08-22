@@ -1,4 +1,3 @@
-import os
 from slacker import Slacker
 
 from utils.config import Config
