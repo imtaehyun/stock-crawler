@@ -17,7 +17,7 @@ sched = BlockingScheduler(timezone=SEOUL_TZ)
 # 매일 오전 7시 주식종목 업데이트
 sched.add_job(update_stock_master, trigger='cron', day='*', hour=7, minute=0, second=0)
 
-# 5분마다 다음 증권 뉴스 업데이트
-sched.add_job(update_daum_stock_news, trigger='interval', minutes=5)
+# 1분마다 다음 증권 뉴스 업데이트
+sched.add_job(update_daum_stock_news, trigger='interval', minutes=1)
 
 sched.start()
