@@ -1,12 +1,13 @@
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urlparse, parse_qs
 
 import requests
 from scrapy.selector import Selector
+from sqlalchemy import and_
 
 from database import session
-from models import StockNews
+from models import StockNews, 종목_마스터, SEOUL_TZ
 from utils.logger import Logger
 from utils.slack import Slack
 
@@ -83,6 +84,19 @@ def update_daum_stock_news():
         slack.send_message('BATCH:update_daum_stock_news fail {}'.format(e))
 
 
+def update_news_stock_code():
+    stock_list = session.query(종목_마스터.종목코드, 종목_마스터.종목이름).all()
+
+    stock_news = session.query(StockNews).filter(StockNews.종목코드 == None).all()
+
+    for news in stock_news:
+        logger.info('news: {}'.format(news.title))
+        stock = next((stock for stock in stock_list if stock[1] in news.title), None)
+        if stock:
+            news.종목코드 = stock[0]
+            session.commit()
+
+
 if __name__ == '__main__':
-    update_daum_stock_news()
+    update_news_stock_code()
     # get_news_content('MD20170817230056038')
