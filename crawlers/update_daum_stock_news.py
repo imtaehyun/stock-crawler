@@ -73,6 +73,7 @@ def update_daum_stock_news():
                 affected_rows += 1
             except Exception as e:
                 logger.exception('duplicated: {}'.format(news))
+                session.rollback()
 
         execution_time = time.time() - start_time
 
@@ -81,6 +82,7 @@ def update_daum_stock_news():
 
     except Exception as e:
         logger.exception('update_daum_stock_news', exc_info=True)
+        session.rollback()
         slack.send_message('BATCH:update_daum_stock_news fail {}'.format(e))
 
 
