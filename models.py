@@ -34,11 +34,10 @@ class StockNews(Base):
     created_at = Column(DateTime, default=datetime.now(SEOUL_TZ))
     modified_at = Column(DateTime)
 
-    def __init__(self, id, offerer, title, link, date):
+    def __init__(self, id, offerer, title, date):
         self.id = id
         self.offerer = offerer
         self.title = title
-        self.link = link
         self.date = date
 
 class 종목_마스터(Base):
