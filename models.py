@@ -29,7 +29,7 @@ class StockNews(Base):
     id = Column(String(20), primary_key=True)
     offerer = Column(String(30))
     title = Column(String(50))
-    link = Column(String(150))
+    종목코드 = Column(String(6))
     date = Column(DateTime)
     created_at = Column(DateTime, default=datetime.now(SEOUL_TZ))
     modified_at = Column(DateTime)

@@ -51,13 +51,14 @@ def update_daum_stock_news():
     try:
         start_time = time.time()
 
-        db_news = [news[0] for news in session.query(StockNews.id).filter(StockNews.date >= datetime.now(SEOUL_TZ) - timedelta(minutes=10)).all()]
+        db_news = [news[0] for news in session.query(StockNews.id).filter(StockNews.created_at >= datetime.now(SEOUL_TZ) - timedelta(minutes=10)).all()]
 
         affected_rows = 0
         news_list = get_news_list(limit=50)
-        for news in (x for x in news_list if x.get('doc_id') not in db_news):
+
+        for news in [x for x in news_list if x.get('doc_id') not in db_news]:
             date = datetime.strptime(news.get('date'), '%y.%m.%d %H:%M')
-            session.add(StockNews(id=news.get('doc_id'), offerer=news.get('offerer'), title=news.get('title'), link=news.get('link'), date=date))
+            session.add(StockNews(id=news.get('doc_id'), offerer=news.get('offerer'), title=news.get('title'), date=date))
             affected_rows += 1
 
         if affected_rows > 0:
