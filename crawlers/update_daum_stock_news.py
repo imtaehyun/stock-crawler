@@ -51,7 +51,7 @@ def update_daum_stock_news():
     try:
         start_time = time.time()
 
-        db_news = [news[0] for news in session.query(StockNews.id).filter(StockNews.created_at >= datetime.now(SEOUL_TZ) - timedelta(minutes=10)).all()]
+        db_news = [news[0] for news in session.query(StockNews.id).filter(StockNews.created_at >= datetime.now(SEOUL_TZ) - timedelta(hours=1)).all()]
 
         affected_rows = 0
         news_list = get_news_list(limit=50)
@@ -73,6 +73,8 @@ def update_daum_stock_news():
         logger.exception(exc_info=True)
         slack.send_message('BATCH:update_daum_stock_news fail {}'.format(e))
 
+def update_news_stock_code():
+    pass
 
 if __name__ == '__main__':
     update_daum_stock_news()
