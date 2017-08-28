@@ -11,6 +11,8 @@ from models import StockNews, 종목_마스터, SEOUL_TZ
 from utils.logger import Logger
 from utils.slack import Slack
 
+from sqlalchemy.dialects import mysql
+
 logger = Logger().get_logger()
 slack = Slack()
 
@@ -86,19 +88,29 @@ def update_daum_stock_news():
         slack.send_message('BATCH:update_daum_stock_news fail {}'.format(e))
 
 
-def update_news_stock_code():
-    stock_list = session.query(종목_마스터.종목코드, 종목_마스터.종목이름).all()
+def tag_stock_code_to_news():
+    try:
+        stock_list = session.query(종목_마스터.종목코드, 종목_마스터.종목이름).all()
 
-    stock_news = session.query(StockNews).filter(StockNews.종목코드 == None).all()
+        stock_news = session.query(StockNews).filter(StockNews.종목코드 == None, StockNews.created_at >= (datetime.now(SEOUL_TZ) - timedelta(hours=1))).all()
 
-    for news in stock_news:
-        logger.info('news: {}'.format(news.title))
-        stock = next((stock for stock in stock_list if stock[1] in news.title), None)
-        if stock:
-            news.종목코드 = stock[0]
-            session.commit()
+        # print(str(stock_news.statement.compile(dialect=mysql.dialect())))
+        for news in stock_news:
+            try:
+                stock = next((stock for stock in stock_list if stock[1] in news.title), None)
+                if stock:
+                    logger.info('news: {} => {}'.format(news.title, stock[1]))
+                    news.종목코드 = stock[0]
+                    news.modified_at = datetime.now(SEOUL_TZ)
+            except Exception:
+                logger.exception('tag_stock_code_to_news', exc_info=True)
 
+        session.commit()
+    except Exception as e:
+        logger.exception('tag_stock_code_to_news', exc_info=True)
+        session.rollback()
+        slack.send_message('BATCH:tag_stock_code_to_news fail {}'.format(e))
 
 if __name__ == '__main__':
-    update_news_stock_code()
+    tag_stock_code_to_news()
     # get_news_content('MD20170817230056038')
