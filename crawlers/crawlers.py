@@ -63,12 +63,11 @@ def update_daum_stock_news():
                 date = datetime.strptime(news.get('date'), '%y.%m.%d %H:%M')
                 session.add(StockNews(id=news.get('doc_id'), offerer=news.get('offerer'), title=news.get('title'),
                                       date=date))
+                session.commit()
                 affected_rows += 1
             except Exception as e:
                 logger.exception('duplicated: {}'.format(news))
-
-        if affected_rows > 0:
-            session.commit()
+                session.rollback()
 
         execution_time = time.time() - start_time
 
