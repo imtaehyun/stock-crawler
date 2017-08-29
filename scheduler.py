@@ -3,8 +3,7 @@ from datetime import datetime
 import pytz
 from apscheduler.schedulers.background import BlockingScheduler
 
-from crawlers.update_daum_stock_news import update_daum_stock_news, tag_stock_code_to_news
-from crawlers.update_stock_master import update_stock_master
+from crawlers.crawlers import update_stock_master, update_daum_stock_news, tag_stock_code_to_news
 from utils.logger import Logger
 
 logger = Logger().get_logger()
@@ -21,6 +20,6 @@ sched.add_job(update_stock_master, trigger='cron', day='*', hour=7, minute=0, se
 sched.add_job(update_daum_stock_news, trigger='interval', minutes=2)
 
 # 30분마다 뉴스 관련 종목 태깅
-sched.add_job(tag_stock_code_to_news, trigger='interval', minutes=30)
+sched.add_job(tag_stock_code_to_news, trigger='interval', minutes=2)
 
 sched.start()
