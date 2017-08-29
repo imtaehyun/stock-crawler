@@ -20,6 +20,6 @@ sched.add_job(update_stock_master, trigger='cron', day='*', hour=7, minute=0, se
 sched.add_job(update_daum_stock_news, trigger='interval', minutes=2)
 
 # 30분마다 뉴스 관련 종목 태깅
-sched.add_job(tag_stock_code_to_news, trigger='interval', minutes=2)
+sched.add_job(tag_stock_code_to_news, trigger='interval', minutes=30)
 
 sched.start()
