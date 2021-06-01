@@ -30,6 +30,6 @@ slacker==0.9.50
 SQLAlchemy==1.1.13
 Twisted==17.5.0
 tzlocal==1.4
-urllib3==1.22
+urllib3==1.26.5
 w3lib==1.18.0
 zope.interface==4.4.2
